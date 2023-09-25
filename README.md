@@ -11,3 +11,5 @@ Ye Kyaw Thu, Hlaing Myat Nwe, Hnin Aye Thant, Hay Man Htun, Htay Mon, May Myat M
 ## References
 
 1. [Sgaw Kayin Language](https://my.wikipedia.org/wiki/%E1%80%85%E1%80%80%E1%80%B1%E1%80%AC%E1%80%80%E1%80%9B%E1%80%84%E1%80%BA%E1%80%98%E1%80%AC%E1%80%9E%E1%80%AC%E1%80%85%E1%80%80%E1%80%AC%E1%80%B8)
+2. [A Grammar of the Sgaw Karen, by REV. DAVID GILMORE, M.A., Of the American Baptist Mission
+in Burma.](https://gutenberg.net.au/ebooks09/0900201p.pdf)  
