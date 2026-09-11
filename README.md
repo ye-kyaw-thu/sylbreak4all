@@ -316,6 +316,13 @@ The full research corpus is intentionally **not** included in this public releas
 
 The full corpus and any full-corpus segmented results remain outside the public release.
 
+
+## License
+
+The code and the small public example corpus are released under the **MIT License**. See `LICENSE`.
+
+The published paper is not relicensed by this repository; its publisher's copyright and distribution terms continue to apply.
+
 ## References
 
 1. [Sgaw Kayin Language](https://my.wikipedia.org/wiki/%E1%80%85%E1%80%80%E1%80%B1%E1%80%AC%E1%80%80%E1%80%9B%E1%80%84%E1%80%BA%E1%80%98%E1%80%AC%E1%80%9E%E1%80%AC%E1%80%85%E1%80%80%E1%80%AC%E1%80%B8)
@@ -323,9 +330,3 @@ The full corpus and any full-corpus segmented results remain outside the public 
 in Burma., 1898](https://gutenberg.net.au/ebooks09/0900201p.pdf)  
 3. [Anglo Karen Dictionary, by Rev. Jonathan Wade, D.D., 1st Edition 1883, 2nd Edition 1954](https://gutenberg.net.au/ebooks08/0801341p.pdf)
 4. [Languages of Pwo Karen](https://my.wikipedia.org/wiki/%E1%80%95%E1%80%AD%E1%80%AF%E1%80%B8%E1%80%80%E1%80%9B%E1%80%84%E1%80%BA%E1%80%98%E1%80%AC%E1%80%9E%E1%80%AC%E1%80%85%E1%80%80%E1%80%AC%E1%80%B8%E1%80%99%E1%80%BB%E1%80%AC%E1%80%B8)
-
-## License
-
-The code and the small public example corpus are released under the **MIT License**. See `LICENSE`.
-
-The published paper is not relicensed by this repository; its publisher's copyright and distribution terms continue to apply.
