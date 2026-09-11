@@ -1,17 +1,323 @@
 # sylbreak4all
-Syllable Breaking Tool for Nine Ethnic Languages of Myanmar
 
+**Version 0.9.0**
 
-## Citation
+**Regular-expression-based syllable breaking for nine Myanmar languages/varieties**
 
-If you want to use sylbreak4all in your research and we'd appreciate if you use the following reference:  
+`sylbreak4all` is a small rule-based syllable segmentation toolkit derived from the earlier [`sylbreak`](https://github.com/ye-kyaw-thu/sylbreak) regular-expression approach and extended to the nine language/variety codes used in the published study:
 
-Ye Kyaw Thu, Hlaing Myat Nwe, Hnin Aye Thant, Hay Man Htun, Htay Mon, May Myat Myat Khine, Mi Hsu Pan Oo, Mi Pale Phyu, Nang Aeindray Kyaw, Thazin Myint Oo, Thazin Oo, Thet Thet Zin and Thida Oo, "sylbreak4all: Regular Expression based Syllable Breaking Tool for Nine Major Ethnic Languages of Myanmar", In Proceedings of the 16th International Joint Symposium on Artificial Intelligence and Natural Language Processing (iSAI-NLP 2021), virtual conference, Dec 21 to Dec 23, 2021, Thailand, pp. 1-6. [[paper]](https://ieeexplore.ieee.org/document/9678188)
+- Burmese (`bm`)
+- Shan (`sh`)
+- Pa'O (`po`)
+- Pwo Kayin (`pk`)
+- S'gaw Kayin (`sk`)
+- Rakhine (`rk`)
+- Beik (`bk`)
+- Dawei (`dw`)
+- Mon (`mo`)
 
-## References
+The published study presents regular-expression rules for these nine languages and describes syllable segmentation as an important preprocessing step for NLP tasks such as grapheme-to-phoneme conversion, machine translation, and romanization.
 
-1. [Sgaw Kayin Language](https://my.wikipedia.org/wiki/%E1%80%85%E1%80%80%E1%80%B1%E1%80%AC%E1%80%80%E1%80%9B%E1%80%84%E1%80%BA%E1%80%98%E1%80%AC%E1%80%9E%E1%80%AC%E1%80%85%E1%80%80%E1%80%AC%E1%80%B8)
-2. [A Grammar of the Sgaw Karen, by REV. DAVID GILMORE, M.A., Of the American Baptist Mission
-in Burma., 1898](https://gutenberg.net.au/ebooks09/0900201p.pdf)  
-3. [Anglo Karen Dictionary, by Rev. Jonathan Wade, D.D., 1st Edition 1883, 2nd Edition 1954](https://gutenberg.net.au/ebooks08/0801341p.pdf)
-4. [Languages of Pwo Karen](https://my.wikipedia.org/wiki/%E1%80%95%E1%80%AD%E1%80%AF%E1%80%B8%E1%80%80%E1%80%9B%E1%80%84%E1%80%BA%E1%80%98%E1%80%AC%E1%80%9E%E1%80%AC%E1%80%85%E1%80%80%E1%80%AC%E1%80%B8%E1%80%99%E1%80%BB%E1%80%AC%E1%80%B8)
+> **Terminology.** The published paper uses the title “Nine Major Ethnic Languages of Myanmar.” This repository uses “nine Myanmar languages/varieties” as a neutral repository description while preserving the published paper title in the citation below.
+
+## Published paper and citation
+
+**Please cite the published paper when using this repository, its code, or its syllable-breaking rules.**
+
+> Ye Kyaw Thu, Hlaing Myat Nwe, Hnin Aye Thant, Hay Man Htun, Htay Mon, May Myat Myat Khaing, Hsu Pan Oo, Pale Phyu, Nang Aeindray Kyaw, Thazin Myint Oo, Thazin Oo, Thet Thet Zin, and Thida Oo. “sylbreak4all: Regular Expressions for Syllable Breaking of Nine Major Ethnic Languages of Myanmar.” *2021 16th International Joint Symposium on Artificial Intelligence and Natural Language Processing (iSAI-NLP)*, 2021, pp. 1–6. DOI: https://doi.org/10.1109/iSAI-NLP54397.2021.9678188
+
+### BibTeX
+
+```bibtex
+@inproceedings{Thu2021Sylbreak4all,
+  author = {Ye Kyaw Thu and Hlaing Myat Nwe and Hnin Aye Thant and Hay Man Htun and Htay Mon and May Myat Myat Khaing and Hsu Pan Oo and Pale Phyu and Nang Aeindray Kyaw and Thazin Myint Oo and Thazin Oo and Thet Thet Zin and Thida Oo},
+  title = {sylbreak4all: Regular Expressions for Syllable Breaking of Nine Major Ethnic Languages of Myanmar},
+  booktitle = {2021 16th International Joint Symposium on Artificial Intelligence and Natural Language Processing (iSAI-NLP)},
+  pages = {1--6},
+  year = {2021},
+  doi = {10.1109/iSAI-NLP54397.2021.9678188}
+}
+```
+
+## Relationship to `sylbreak`
+
+The earlier [`sylbreak`](https://github.com/ye-kyaw-thu/sylbreak) repository is the predecessor of this work. `sylbreak4all` keeps the same central idea: use Unicode-aware regular-expression rules to insert a separator at candidate syllable boundaries. The published paper groups the rules by orthography and language; this repository keeps that grouping rather than replacing the method with a different segmentation model.
+
+For the Burmese-style rule, the important Unicode context includes the `U+1039` subscript symbol and `U+103A` aThat sign. The paper also notes the use of `U+AA7B` for the Pa'O tone sign Mine Ngar. The language-specific patterns are documented in `docs/PATTERNS.md` and in the source files.
+
+## Supported languages
+
+| Code | Language / variety |
+|---|---|
+| `bm` | Burmese |
+| `bk` | Beik |
+| `dw` | Dawei |
+| `rk` | Rakhine |
+| `mo` | Mon |
+| `po` | PaO |
+| `sh` | Shan |
+| `sk` | Sgaw Kayin |
+| `pk` | Pwo Kayin |
+
+## Input and output
+
+Input is UTF-8 text. The reference behavior removes Unicode whitespace before applying the syllable-breaking rule. The default separator is `|`; use `-s` to select another separator.
+
+Example:
+
+```text
+perl perl/sylbreak4all.pl -i examples/corpus/bamar_burmese.txt -l bm
+```
+
+The public example corpus contains **10 lines for each of the nine language codes**, and `examples/results/` contains the corresponding segmented results.
+
+## Important notice about Unicode typing order
+
+**Warning:** `sylbreak4all` assumes that the input text is correctly typed and encoded in the expected Unicode character order for the target language. The syllable breaker is a rule-based regular-expression system; it does **not** normalize, reorder, or repair characters before segmentation.
+
+If a user types a Myanmar-language word with the wrong Unicode typing order, or if an input file contains incorrectly ordered combining characters, the regular-expression rules may detect the wrong syllable boundaries and therefore produce incorrect segmentation. This is expected behavior for malformed or incorrectly ordered input and should not be interpreted as a failure of the segmentation rules on correctly ordered text.
+
+For example, the following inputs demonstrate incorrect segmentation caused by wrong Unicode typing order:
+
+### Shan
+
+Input:
+
+```text
+ပဵၼ်ၵူၼ်းဢၼ်လဵၼ်ႈၸိူင်းၶႅၼ်ႇႄတႉယဝ်ႈ
+```
+
+Output:
+
+```text
+|ပဵၼ်|ၵူၼ်း|ဢၼ်|လဵၼ်ႈ|ၸိူင်း|ၶႅၼ်ႇႄ|တႉ|ယဝ်ႈ
+```
+
+Here, `ႄတႉ` contains characters in the wrong typing order.
+
+### Beik
+
+Input:
+
+```text
+ဘဇာလောက်မြင့်မြတ်ရိ။
+```
+
+Output:
+
+```text
+/ဘ/ဇာ/လောက်/မြ/င့်/မြတ်/ရိ/။
+```
+
+Here, `င့်` contains characters in the wrong typing order, causing the expected syllable boundary to be broken incorrectly.
+
+### Rakhine
+
+Input:
+
+```text
+နောက်ဆုံးတစ်ကြိမ်သူ့ကိုချစ်ပါရေလို့ပြောခွင့်တောင်မရပါ။
+```
+
+Output:
+
+```text
+​_နောက်_ဆုံး_တစ်_ကြိမ်_သူ့_ကို_ချစ်_ပါ_ရေ_လို့_ပြော_ခွ_င့်_တောင်_မ_ရ_ပါ_။
+```
+
+Again, the incorrectly ordered `င့်` sequence causes the syllable to be split incorrectly.
+
+**Recommendation:** Before using `sylbreak4all`, make sure that the source text has been entered with the correct Unicode typing order and does not contain incorrectly ordered combining characters. If your input comes from OCR, copied text, legacy encodings, or mixed text-processing pipelines, inspect and normalize the text appropriately before syllable segmentation.
+
+## Command-line help
+
+All maintained ports use the same help content and language-code descriptions. For example:
+
+```text
+$ perl perl/sylbreak4all.pl --help
+Syllable Breaker Tool
+Version: 0.9.0
+
+Supported Languages:
+    bm  - Burmese
+    bk  - Beik
+    dw  - Dawei
+    rk  - Rakhine
+    mo  - Mon
+    po  - PaO
+    sh  - Shan
+    sk  - Sgaw Kayin
+    pk  - Pwo Kayin
+
+Usage: sylbreak4all [-i filename] [-l language] [-s separator] [-p]
+    -i | --input-file   Input file name (default: STDIN)
+    -s | --separator    Separator (default: '|')
+    -l | --language     Language (default: bm for Burmese)
+    -p | --print        Print input alongside the output (default: 0)
+    -h | --help         Show this help
+```
+
+## Quick start
+
+### Perl
+
+```text
+perl perl/sylbreak4all.pl -i examples/corpus/bamar_burmese.txt -l bm
+```
+
+### Python
+
+```text
+python3 python/sylbreak4all.py -i examples/corpus/shan.txt -l sh
+```
+
+### PHP
+
+```text
+php php/sylbreak4all.php -i examples/corpus/mon.txt -l mo
+```
+
+### Java
+
+```text
+cd java
+./compile.sh
+./run_java.sh -i ../examples/corpus/pao.txt -l po
+```
+
+### JavaScript / Node.js
+
+```text
+node java_script/sylbreak4all.js -i examples/corpus/rakhine.txt -l rk
+```
+
+### Ruby
+
+```text
+ruby ruby/sylbreak4all.rb -i examples/corpus/sgaw_kayin.txt -l sk
+```
+
+### Bash wrapper
+
+The Bash script is a compatibility wrapper around the Perl reference implementation:
+
+```text
+bash bash/sylbreak4all.sh -i examples/corpus/po_kayin.txt -l pk
+```
+
+### C++
+
+The C++ implementation uses ICU for Unicode regular expressions. Compile it with:
+
+```text
+cd cpp
+./compile_cpp.sh
+./run_cpp.sh -i ../examples/corpus/shan.txt -l sh
+```
+
+A working ICU development installation and `pkg-config` are required.
+
+### R
+
+Run the R implementation directly with `Rscript`:
+
+```text
+Rscript R/sylbreak4all.R --help
+Rscript R/sylbreak4all.R -i examples/corpus/mon.txt -l mo
+```
+
+A convenience wrapper is also provided:
+
+```text
+./R/run_R.sh -i examples/corpus/mon.txt -l mo
+```
+
+### Julia
+
+Run the Julia implementation directly with Julia 1.x:
+
+```text
+julia julia/sylbreak4all.jl --help
+julia julia/sylbreak4all.jl -i examples/corpus/shan.txt -l sh
+```
+
+A convenience wrapper is also provided:
+
+```text
+./julia/run_julia.sh -i examples/corpus/shan.txt -l sh
+```
+
+## Public 10-line corpus and results
+
+The repository deliberately includes only a **small public demonstration corpus**: 10 lines per language. It is intended for reproducibility, smoke testing, documentation, and learning how the rule-based segmenter behaves.
+
+Input files:
+
+```text
+examples/corpus/bamar_burmese.txt
+examples/corpus/beik.txt
+examples/corpus/dawei.txt
+examples/corpus/mon.txt
+examples/corpus/pao.txt
+examples/corpus/po_kayin.txt
+examples/corpus/rakhine.txt
+examples/corpus/sgaw_kayin.txt
+examples/corpus/shan.txt
+```
+
+Matching reference outputs are in:
+
+```text
+examples/results/
+```
+
+Regenerate them with:
+
+```text
+./scripts/run_examples.sh
+```
+
+## Release notes
+
+Version **0.9.0** keeps the published regular-expression syllable-breaking approach and makes only necessary implementation and release-quality updates.
+
+1. The Perl reference implementation now uses the requested language code to select the corresponding language-specific rule.
+2. The PHP implementation is aligned with the same language-specific rule families.
+3. UTF-8 input handling and whitespace preprocessing are kept consistent across the maintained ports.
+4. Java is compiled from source with UTF-8 explicitly enabled.
+5. The C++ implementation uses ICU for Unicode regular expressions rather than distributing a compiled binary.
+6. The repository includes only the small public example corpus and its segmented reference outputs.
+
+No new segmentation model or machine-learning component was introduced.
+
+## Repository layout
+
+```text
+perl/            Perl reference implementation
+python/          Python implementation
+php/             PHP implementation
+cpp/             C++ implementation (ICU)
+java/            Java implementation
+java_script/     JavaScript / Node.js implementation
+ruby/            Ruby implementation
+bash/             Bash compatibility wrapper using the Perl reference
+R/               R implementation
+julia/            Julia implementation
+examples/        Public 10-line input/output examples
+scripts/         Example runners
+docs/            Pattern and release notes
+LICENSE           MIT license
+VERSION           Release version (0.9.0)
+```
+
+## Data and privacy note
+
+The full research corpus is intentionally **not** included in this public release. The public repository contains only the nine 10-line demonstration files and their corresponding segmented outputs.
+
+The full corpus and any full-corpus segmented results remain outside the public release.
+
+## License
+
+The code and the small public example corpus are released under the **MIT License**. See `LICENSE`.
+
+The published paper is not relicensed by this repository; its publisher's copyright and distribution terms continue to apply.
