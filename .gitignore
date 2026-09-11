@@ -1,0 +1,6 @@
+*.class
+*.o
+cpp/sylbreak4all
+__pycache__/
+*.log
+sylbreak4all-private-results/
