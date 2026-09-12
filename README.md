@@ -71,6 +71,49 @@ perl perl/sylbreak4all.pl -i examples/corpus/bamar_burmese.txt -l bm
 
 The public example corpus contains **10 lines for each of the nine language codes**, and `examples/results/` contains the corresponding segmented results.
 
+### Algorithm / Working Flow
+
+`sylbreak4all` performs syllable segmentation by applying a language-specific regular expression to normalized Unicode text. The overall procedure is:
+
+1. **Read UTF-8 input** and remove Unicode whitespace.
+2. **Select the language rule** using the language code (`bm`, `bk`, `dw`, `rk`, `mo`, `po`, `sh`, `sk`, or `pk`).
+3. **Match candidate syllable starts** using the corresponding regular-expression pattern and language-specific Unicode character classes.
+4. **Protect subscript and aThat contexts** where required by the rule, so that consonants participating in a syllable are not incorrectly treated as new syllable starts.
+5. **Insert the separator** (default: `|`) immediately before each matched syllable start.
+6. **Return the segmented text**, preserving the matched syllable units and punctuation/symbol handling defined by the selected rule.
+
+In simplified form:
+
+```text
+UTF-8 input
+    │
+    ▼
+Remove whitespace
+    │
+    ▼
+Select language-specific regex
+    │
+    ├── bm / bk / dw / rk / mo
+    ├── sh
+    ├── sk
+    └── pk
+    │
+    ▼
+Match syllable-start candidates
+    │
+    ▼
+Insert separator before each match
+    │
+    ▼
+Syllable-segmented output
+```
+
+The key design principle is that **the segmentation mechanism is shared, while the character classes and boundary constraints are adapted to each language/variety's orthography**. Thus, `sylbreak4all` uses one lightweight regex-based framework rather than a separate segmentation algorithm for each language.
+
+<div style="text-align: center;">
+  <img src="https://github.com/ye-kyaw-thu/sylbreak4all/blob/main/concept_fig/sylbreak4all_concept.png " width="500" alt="Overview of Sylbreak4All Segmenter">
+</div>
+
 ## Important notice about Unicode typing order
 
 **Warning:** `sylbreak4all` assumes that the input text is correctly typed and encoded in the expected Unicode character order for the target language. The syllable breaker is a rule-based regular-expression system; it does **not** normalize, reorder, or repair characters before segmentation.
