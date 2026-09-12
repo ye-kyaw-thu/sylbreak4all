@@ -1,0 +1,102 @@
+digraph sylbreak4all {
+  graph [
+    rankdir=TB,
+    splines=polyline,
+    nodesep=0.42,
+    ranksep=0.55,
+    pad=0.28,
+    margin=0.12,
+    bgcolor="white",
+    dpi=300,
+    fontname="Noto Sans Myanmar"
+  ];
+  node [
+    shape=box,
+    style="rounded,filled",
+    fontname="Noto Sans Myanmar",
+    fontsize=17,
+    margin="0.15,0.10",
+    color="#365A7A",
+    fillcolor="#F5FAFF",
+    penwidth=1.8
+  ];
+  edge [
+    fontname="Noto Sans Myanmar",
+    fontsize=12,
+    color="#5B6B7A",
+    arrowsize=0.75,
+    penwidth=1.5
+  ];
+
+  title [
+    label="sylbreak4all\nRegex-based Syllable Breaking for Nine Myanmar Languages",
+    shape=box,
+    style="rounded,filled,bold",
+    fontsize=24,
+    color="#1F4E79",
+    fillcolor="#EAF3FF",
+    penwidth=2.5,
+    margin="0.24,0.15"
+  ];
+
+  input [label="INPUT TEXT\nUnicode text / lines\n\nဥပမာ\nကျန်းမာတယ်၊ ဒါပေမဲ့ အလုပ်များတယ်။", fillcolor="#FFF8E8", color="#9A6A00", fontsize=18];
+  clean [label="1. PREPROCESS\nRemove phrase whitespace\nre.sub(r'\\s+', '', line)\n\nHistorical reference behavior", fillcolor="#F7F7F7", color="#777777"];
+  lang [label="2. LANGUAGE SELECTOR\n-l / --language\nBM · BK · DW · RK · MO · PO · SH · SK · PK", fillcolor="#EEF8EE", color="#4C7A50", fontsize=18];
+
+  subgraph cluster_rules {
+    label="3. REGEX RULES: COMMON CORE + LANGUAGE-SPECIFIC VARIANTS";
+    fontname="Noto Sans Myanmar";
+    fontsize=19;
+    color="#A9B9C8";
+    style="rounded,dashed";
+    penwidth=1.5;
+
+    common [
+      label="COMMON CORE\nBM · RK · DW · BK · PO\n\n((?<!္)[က-အ](?![်္])\n | [a-zA-Z0-9 + punctuation + whitespace])\n\nMyanmar consonant starts a segment when\nnot preceded by VIRAMA (္) and not followed\nby ASAT (်) or VIRAMA",
+      fillcolor="#F8FBFE",
+      color="#5B88AA",
+      fontsize=16
+    ];
+
+    variants [
+      label="LANGUAGE-SPECIFIC CHARACTER SETS\n\nSHAN  [ၵၶငၸသၺ…ဢၹၷႀ…]\nSGAW KAYIN  [ကခဂ…သဟအဧ]\nPWO KAYIN  [က-အ] + Pwo symbols\nMON  [ကခဂ…ၜအၝ] + Myanmar-style guards",
+      fillcolor="#FFF7F2",
+      color="#A66A3F",
+      fontsize=16
+    ];
+
+    {rank=same; common; variants;}
+  }
+
+  match [
+    label="REGEX MATCH / SEGMENT STARTS\nPython re.Pattern.sub()\n\nFor every match: separator + match.group(1)",
+    fillcolor="#F1EEFF",
+    color="#62569A",
+    fontsize=19
+  ];
+  sep [label="4. SEPARATOR INSERTION\n-s / --separator\nDefault: |\n\n| + matched unit", fillcolor="#FFF0F7", color="#9A4C72", fontsize=18];
+  trim [label="5. FINAL CLEAN-UP\nTrim leading/trailing whitespace\n\nResult: syllable-token sequence", fillcolor="#F7F7F7", color="#777777", fontsize=18];
+
+  output [label="OUTPUT\n\n|ကျန်း|မာ|တယ်|၊|ဒါ|ပေ|မဲ့|အ|လုပ်|များ|တယ်|။", fillcolor="#EAF7F6", color="#317B77", fontsize=21];
+  printopt [label="Optional -p / --print\ninput: ...\noutput: ...", fillcolor="#F9F9F9", color="#777777", fontsize=15];
+  examples [
+    label="EXAMPLES / RESULTS\nBurmese · Beik · Dawei · Rakhine · Mon\nPaO · Pwo Kayin · Sgaw Kayin · Shan",
+    shape=box3d,
+    fillcolor="#F2F6FA",
+    color="#587089",
+    fontsize=17
+  ];
+
+  title -> input;
+  input -> clean [label="line"];
+  clean -> lang [label="clean text"];
+  lang -> common [label="BM / RK / DW / BK / PO"];
+  lang -> variants [label="SH / SK / PK / MO"];
+  common -> match [label="compiled pattern"];
+  variants -> match [label="compiled pattern"];
+  match -> sep [label="matched units"];
+  sep -> trim [label="segmented line"];
+  trim -> output [label="final text"];
+  trim -> printopt [label="-p", style=dashed];
+  output -> examples [label="demonstrated by examples/results/*", style=dashed];
+}
