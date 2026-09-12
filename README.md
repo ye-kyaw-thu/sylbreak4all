@@ -110,11 +110,9 @@ Syllable-segmented output
 
 The key design principle is that **the segmentation mechanism is shared, while the character classes and boundary constraints are adapted to each language/variety's orthography**. Thus, `sylbreak4all` uses one lightweight regex-based framework rather than a separate segmentation algorithm for each language.
 
-<div style="text-align: center;">
-  <img src="https://github.com/ye-kyaw-thu/sylbreak4all/blob/main/concept_fig/sylbreak4all_concept.png"
-       width="600"
-       alt="Overview of Sylbreak4All Segmenter">
-</div>
+<p align="center">
+  <img src="concept_fig/sylbreak4all_concept.png" width="700" alt="Overview of Sylbreak4All Segmenter">
+</p>
 
 ## Important notice about Unicode typing order
 
